@@ -6,48 +6,50 @@
  * */
 use std::fs::File;
 use std::io::prelude::*;
+use std::str::FromStr;
+use std::vec::Vec;
 
 
-struct elf{
-    elf_number: i32
-    calories: Vec<i32>,
-
-
-}
-
-
-
-fn parse_phrase<'a, Iter: Iterator<Item = &'a str>>(split: Iter) -> Vec<String> {
-    let mut phrase: String = "".to_owned();
-    let mut vec: Vec<String> = Vec::new();
+fn parse_phrase<'a, Iter: Iterator<Item = &'a str>>(split: Iter) -> Vec<i32> {
+    let mut total: i32 = 0;
+    let mut vec: Vec<i32> = Vec::new();
 
     for i in split {
         if i == "" {
-            vec.push(phrase);
-            phrase = "".to_owned();
+            vec.push(total);
+            total = 0; 
             continue;
         } else {
-            phrase = phrase + i;
-            phrase = phrase + " ";
+                        
+            total +=  i32::from_str(i).unwrap_or(0);
         }
     }
     vec
 }
 
 //opens file 
-pub fn get_phrase() -> Vec<String> {
-    let mut file = File::open("phrases.txt").expect("when");
+fn get_phrase() -> Vec<i32> {
+    let mut file = File::open("calories.txt").expect("when");
     let mut content = String::new();
     file.read_to_string(&mut content).expect("Does not exist");
-
-    let phrase_vec: Vec<i32> = parse_phrase(split_content);
-
-    phrase_vec
+    let split_content = content.split("\n");
+    let vec:Vec<i32> = parse_phrase(split_content);
+    vec
 }
 
 // logic for the calories question 
-fn run_calories() -> <> {
-    
+pub fn run_calories(){
+    let mut vec: Vec<i32> = get_phrase();
+    let max = vec.iter().max().unwrap();
+    println!("{}", max);
+    let mut last3: i32 = 0; 
+    vec.sort();
+    for i in 1..4 {
+        let index:usize = vec.len() - i;
+        last3 += vec[index];
+
+    }
+    println!("{}", last3);
     
 
 
