@@ -6,14 +6,28 @@ The third round is a draw with both players choosing Scissors, giving you a scor
 use std::fs::File;
 use std::io::prelude::*;
 
-fn proper_rules(result:char, ) {
-    let mut point:i32 = 0 
+fn proper_rules(result:char, opponent:char) -> i32{
+    let mut point:i32 = 0;
     match result {
-        'X' => 1,
-        'Y' => 2,
-        'Z' => 3,    
-        _ => 0,
+        'X' => match opponent {
+            'A' => point += 3,
+            'B' => point += 1,
+            'C' => point += 2,
+            _ => point += 0,},
+        'Y' => match opponent {
+            'A' => point += 3 + 1,
+            'B' => point += 3 + 2,
+            'C' => point += 3 + 3,
+            _ => point += 0,},
+
+        'Z' => match opponent {
+            'A' => point += 6 + 2,
+            'B' => point += 6 + 3,
+            'C' => point += 6 + 1,
+            _ => point += 0,},     
+        _ => point += 0,
     };
+    point
 }
 
 
@@ -90,7 +104,9 @@ pub fn run_rock() {
         let line_vec: Vec<char> = line.chars().collect();
         let result: i32 = get_winner(line_vec[2], line_vec[0]);
         points += get_points(line_vec[2], result);
+        real_points += proper_rules(line_vec[2], line_vec[0]);
     }
 
-    println!("{}", points)
+    println!("{}", points);
+    println!("{}", real_points);
 }
